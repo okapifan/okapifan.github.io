@@ -5,7 +5,54 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </header>
 <body>
-  <h1>Small Improvements and Fixes</h1>
-  <p></p>
+  <body style="padding-top: 30px;">
+    <div class="container">
+      <h1>Small Improvements and Fixes</h1>
+      <p>
+        <i>Important note: This page doesn't really include a tutorial, instead it's a collection of small adjustments and improvements.<br /> 
+        For every adjustment/fix I add here I will also note down on which version of the source code this is tested. <br />
+        Generally that's noted down by the episode number. If a version is noted, it doesn't directly mean it doesn't work before that point, <br />
+        only that it hasn't be tested on a prior version. <br /><br />
+
+        If at any point the code stops working in newer versions. Feel free to message me and I will update it.
+      </p>
+      <hr />
+      <h2>Stat Boost/Debuf Dialog</h2>
+      <p>
+        <ul>
+          <li>Tested on episode: 116</li>
+          <li>Affected scripts: Pokemon.cs (ApplyBoosts)</li>
+          <li>Reason: Stat change messages don’t take in account bigger stat changes or the moment it already was on 6/-6</li>
+        </ul>
+        <pre><code>
+          public void ApplyBoosts(List<StatBoost> statBoosts)
+          {
+            foreach (var statBoost in statBoosts)
+            {
+              var stat = statBoost.stat;
+              var boost = statBoost.boost;
+              bool changeIsPositive = (boost > 0) ? true : false;
+
+              if ((changeIsPositive && StatBoosts[stat] == 6) 
+                || (!changeIsPositive && StatBoosts[stat] == -6))
+              {
+                string riseOrFall = changeIsPositive ? "higher" : "lower";
+                StatusChanges.Enqueue($"{Base.Name}'s {stat} won't go any {riseOrFall}!");
+              }
+              else
+              {
+                StatBoosts[stat] = Mathf.Clamp(StatBoosts[stat] + boost, -6, 6);
+
+                string riseOrFall = changeIsPositive ? "rose" : "fell";
+                string bigChange = (Mathf.Abs(boost) >= 3) ? " severly " : (Mathf.Abs(boost) == 2) ? " harsly " : " ";
+                  StatusChanges.Enqueue($"{Base.Name}'s {stat}{bigChange}{riseOrFall}!");
+              }
+        
+              Debug.Log($"{stat} has been boosted to {StatBoosts[stat]}");
+            }
+          }
+        </code></pre>
+      </p>
+    </div>
   </body>
 </html>
