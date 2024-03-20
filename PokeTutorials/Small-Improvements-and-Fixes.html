@@ -21,6 +21,7 @@
           <li><a href="#Missing-Types-in-Type-Enum">Missing Types in Type Enum</a></li>
           <li><a href="#Missing-Growth-Rates">Missing Growth Rates</a></li>
           <li><a href="#Fix-Allowing-HPBar-to-also-Smoothly-Heal">Fix: Allowing HPBar to also Smoothly Heal</a></li>
+          <li><a href="#Helper-Method-HasType">Helper Method: HasType()</a></li>
           
         </ul>
       </p>
@@ -173,6 +174,23 @@ public IEnumerator SetHPSmooth(float newHp)
   health.transform.localScale = new Vector3(newHp, 1f);
 
   IsUpdating = false;
+}
+        </code></pre>
+      </p>
+      <hr />
+      <h2 id="Helper-Method-HasType">Helper Method: HasType()</h2>
+      <p>
+        <ul>
+          <li>Tested on episode: 116</li>
+          <li>Affected scripts: Pokemon.cs</li>
+          <li>Reason: Just a quick helper method to quickly check if a pokémon has a certain type compared to checking both type slots</li>
+        </ul>
+        <pre .language-cs><code>
+public bool HasType(PokemonType t)
+{
+  if ((_base.Type1 == t) || (_base.Type2 == t))
+    return true;
+  return false;
 }
         </code></pre>
       </p>
