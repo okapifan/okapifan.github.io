@@ -34,7 +34,7 @@
           <li>Affected scripts: Pokemon.cs (ApplyBoosts)</li>
           <li>Reason: Stat change messages don’t take in account bigger stat changes or the moment it already was on 6/-6</li>
         </ul>
-        <pre .language-cs><code class="code-block">
+        <pre class="language-cs"><code>
 public void ApplyBoosts(List<StatBoost> statBoosts)
 {
   foreach (var statBoost in statBoosts)
