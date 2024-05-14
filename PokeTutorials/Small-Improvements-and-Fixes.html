@@ -196,5 +196,22 @@ public bool HasType(PokemonType t)
         </code></pre>
       </p>
     </div>
+    <hr />
+      <h2 id="MoveTag">Move Tags</h2>
+      <p>
+        <ul>
+          <li>Tested on episode: 116</li>
+          <li>Affected scripts: MoveBase.cs</li>
+          <li>Reason: An extra enum with tags that can be used for certain effects.</li>
+          <li>List of moves that should have this tag: </li>
+        </ul>
+        <pre .language-cs><code>
+public enum MoveTag
+{
+    Contact, MinimizeBonusDamage, SoundBased, BallOrBomb, AuraOrPulse, Bite, Dance, Explosive, PowderOrSpore, Punching, WindBased, SlicingMove, SemiInvulnerableBonusDamageFlying, 
+}
+        </code></pre>
+      </p>
+    </div>
   </body>
 </html>
