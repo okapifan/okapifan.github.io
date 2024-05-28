@@ -29,44 +29,36 @@
         Link to documentation about Gradient: <a href="https://docs.unity3d.com/ScriptReference/Gradient.html">Here</a>
       </p>
       <hr />
-      <h2 id="Missing-Types-in-Type-Enum">Missing Types in Type Enum</h2>
+      <h2 id="GlobalSettings">GlobalSettings.cs</h2>
       <p>
-        <ul>
-          <li>Tested on episode: 116</li>
-          <li>Affected scripts: PokemonBase.cs (PokemonType)</li>
-          <li>Reason: Type enum was missing Dark, Steel and Fairy, I also added Shadow and Stellar Type for completion, but these are commented out</li>
-        </ul>
+        First we need to actually add the Gradient. For this I will use the GlobalSettings script so I can access it from anywhere. And this way we only have to assign it once. <br /><br />
+        I prefer to split the SerializeFields and getters to be together with the same type of code (so getters with getters and the serializefields with serializefields). <br />
+        
         <pre .language-cs><code>
-public enum PokemonType
-{
-  None,
-  Normal,
-  Fire,
-  Water,
-  Electric,
-  Grass,
-  Ice,
-  Fighting,
-  Poison,
-  Ground,
-  Flying,
-  Psychic,
-  Bug,
-  Rock,
-  Ghost,
-  Dragon,
-  Dark,
-  Steel,
-  Fairy
+// SeralizeFields
+[SerializeField] Gradient healthbarGradient;
 
-  // Special Types
-  // Shadow,
-  // Stellar
-}
+// Getters
+public Gradient HealthbarGradient => healthbarGradient;
         </code></pre>
+
+      After we have made the values we need to assign the Gradient in the editor. For me it looks like this: <br />
+      ![Gradient Example](/PokeTutorials/assets/HealthbarGradient.png)
+      Colors (Bottom Row): <br />
+      0.0%		- Red <br />
+      25.0%		- Red <br />
+      26.0%		- Orange <br />
+      50.0%		- Orange <br />
+      51.0%		- Green <br />
+      100.0%	- Green <br /> <br />
+
+      Alpha (Top Row) <br />
+      0.0%		- 255 <br />
+      100.0%	- 255
+
       </p>
       <hr />
-      <h2 id="Missing-Growth-Rates">Missing Growth Rates</h2>
+      <h2 id="HPBar">HPBar.cs</h2>
       <p>
         <ul>
           <li>Tested on episode: 116</li>
