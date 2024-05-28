@@ -1,1 +1,183 @@
+<!DOCTYPE html>
+<html>
+<header>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="./Resources.css">
+</header>
+<body>
+  <body style="padding-top: 30px;">
+    <div class="container">
+      <h1>Colored Health-bar</h1>
+      <p>
+        This is based on part 110 of Game Dev Experiments YouTube-series “Make a game like Pokémon in Unity series”. <br /><br />
+        Note: <i>This tutorial may already work way before this point, but haven’t been tested on older parts of the tutorial videos. </i><br /><br />
+        The affected scripts will be: <br />
+        <ul>
+          <li>HPBar.cs</li>
+          <li>GlobalSettings.cs</li>
+        </ul>
+      </p>
+      
+      <hr />
+      <h2 id="Introduction">Introduction</h2>
+      <p>
+        This tutorial will update the health-bar that’s being used when the pokémon’s health is being visually displayed. 
+        These places include the Party and the Battle System. 
+        In this tutorial we will change the code so that at 50% the color of the health will be orange and at 25% it will be red. 
+        To not make the color change instantly we will use a Gradient. <br /><br />
+        Link to documentation about Gradient: <a href="https://docs.unity3d.com/ScriptReference/Gradient.html">Here</a>
+      </p>
+      <hr />
+      <h2 id="Missing-Types-in-Type-Enum">Missing Types in Type Enum</h2>
+      <p>
+        <ul>
+          <li>Tested on episode: 116</li>
+          <li>Affected scripts: PokemonBase.cs (PokemonType)</li>
+          <li>Reason: Type enum was missing Dark, Steel and Fairy, I also added Shadow and Stellar Type for completion, but these are commented out</li>
+        </ul>
+        <pre .language-cs><code>
+public enum PokemonType
+{
+  None,
+  Normal,
+  Fire,
+  Water,
+  Electric,
+  Grass,
+  Ice,
+  Fighting,
+  Poison,
+  Ground,
+  Flying,
+  Psychic,
+  Bug,
+  Rock,
+  Ghost,
+  Dragon,
+  Dark,
+  Steel,
+  Fairy
 
+  // Special Types
+  // Shadow,
+  // Stellar
+}
+        </code></pre>
+      </p>
+      <hr />
+      <h2 id="Missing-Growth-Rates">Missing Growth Rates</h2>
+      <p>
+        <ul>
+          <li>Tested on episode: 116</li>
+          <li>Affected scripts: PokemonBase.cs (GrowthRate & GetExpForLevel)</li>
+          <li>Reason: Erratic and Fluctuating were missing</li>
+        </ul>
+        <pre .language-cs><code>
+public enum GrowthRate
+{
+  Erratic, Fast, MediumFast, MediumSlow, Slow, Fluctuating
+}
+        </code></pre>
+      =====
+      <pre .language-cs><code>
+public int GetExpForLevel(int level)
+{
+  if (growthRate == GrowthRate.Erratic)
+  {
+    if (level < 50)
+      return Mathf.FloorToInt((Mathf.Pow(level, 3f) * (100f - level)) / 50f);
+    else if (level >= 50 && level < 68)
+      return Mathf.FloorToInt((Mathf.Pow(level, 3f) * (150f - level)) / 100f);
+    else if (level >= 68 && level < 98)
+      return Mathf.FloorToInt((Mathf.Pow(level, 3f) * ((1911f - (10f * level)) / 3f)) / 500f);
+    else
+      return Mathf.FloorToInt((Mathf.Pow(level, 3f) * (160f - level)) / 100f);
+  }
+  else if (growthRate == GrowthRate.Fast)
+    return Mathf.FloorToInt(4 * (Mathf.Pow(level, 3f)) / 5f);
+  else if (growthRate == GrowthRate.MediumFast)
+    return Mathf.FloorToInt(Mathf.Pow(level, 3f));
+  else if (growthRate == GrowthRate.MediumSlow)
+    return Mathf.FloorToInt((6 * (Mathf.Pow(level, 3f)) / 5f) - 15f * (Mathf.Pow(level, 2f)) + 100f * level - 140f);
+  else if (growthRate == GrowthRate.Slow)
+    return Mathf.FloorToInt(5 * (Mathf.Pow(level, 3f)) / 4f);
+  else if (growthRate == GrowthRate.Fluctuating)
+  {
+    if (level < 15)
+      return Mathf.FloorToInt(Mathf.Pow(level, 3f) * ((((level + 1f) / 3f) + 24f) / 50f)); //125 * (26 / 50)
+    else if (level >= 15 && level < 36)
+      return Mathf.FloorToInt(Mathf.Pow(level, 3f) * ((level + 14f) / 50f));
+    else
+      return Mathf.FloorToInt(Mathf.Pow(level, 3f) * (((level / 2f) + 32f) / 50f));
+  }
+
+  return -1;
+}
+        </code></pre>
+      </p>
+      <hr />
+      <h2 id="Fix-Allowing-HPBar-to-also-Smoothly-Heal">Fix: Allowing HPBar to also Smoothly Heal</h2>
+      <p>
+        <ul>
+          <li>Tested on episode: 110</li>
+          <li>Affected scripts: HPBar.cs (SetHPSmooth)</li>
+          <li>Reason: The healthbar could only update with losing health, not gaining health. This is used in multiple of my tutorials</li>
+        </ul>
+        <pre .language-cs><code>
+public IEnumerator SetHPSmooth(float newHp)
+{
+  IsUpdating = true;
+
+  float curHp = health.transform.localScale.x;
+  bool isDamaging = (curHp - newHp > 0) ? true : false;
+  float changeAmt = curHp - newHp;
+
+  while ((isDamaging) ? (curHp - newHp > Mathf.Epsilon) : (curHp - newHp < Mathf.Epsilon))
+  {
+    curHp -= changeAmt * Time.deltaTime;
+    health.transform.localScale = new Vector3(curHp, 1f);
+    yield return null;
+  }
+  health.transform.localScale = new Vector3(newHp, 1f);
+
+  IsUpdating = false;
+}
+        </code></pre>
+      </p>
+      <hr />
+      <h2 id="Helper-Method-HasType">Helper Method: HasType()</h2>
+      <p>
+        <ul>
+          <li>Tested on episode: 116</li>
+          <li>Affected scripts: Pokemon.cs</li>
+          <li>Reason: Just a quick helper method to quickly check if a pokémon has a certain type compared to checking both type slots</li>
+        </ul>
+        <pre .language-cs><code>
+public bool HasType(PokemonType t)
+{
+  if ((_base.Type1 == t) || (_base.Type2 == t))
+    return true;
+  return false;
+}
+        </code></pre>
+      </p>
+    <hr />
+      <h2 id="MoveTags">Move Tags</h2>
+      <p>
+        <ul>
+          <li>Tested on episode: 116</li>
+          <li>Affected scripts: MoveBase.cs</li>
+          <li>Reason: An extra enum with tags that can be used for certain effects.</li>
+          <li><a href="./MoveTags">List of moves that should have this tag</a></li>
+        </ul>
+        <pre .language-cs><code>
+public enum MoveTag
+{
+    Contact, MinimizeBonusDamage, SoundBased, BallOrBomb, AuraOrPulse, Bite, Dance, Explosive, PowderOrSpore, Punching, WindBased, SlicingMove, SemiInvulnerableBonusDamageFlying, 
+}
+        </code></pre>
+      </p>
+    </div>
+  </body>
+</html>
