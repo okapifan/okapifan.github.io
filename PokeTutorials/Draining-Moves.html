@@ -59,7 +59,7 @@ if(move.DrainingPercentage != 0)
       <h2 id="HPBar">HPBar.cs</h2>
       <p>
         Lastly we need to fix an issue with the HealthBar. 
-        Currently the HealthBar has no option to smoothly update because there is a check if the CurrentHP - NewHP is greater than 0, which will result in instant false, breaking the loop with healing. <br /<br />
+        Currently the HealthBar has no option to smoothly update because there is a check if the CurrentHP - NewHP is greater than 0, which will result in instant false, breaking the loop with healing. <br /><br />
 
 To fix this we introduce a new Boolean which tells the While Loop which formula to use: <br />
 - OnDamaing use “(curHp - newHp > Mathf.Epsilon)” <br />
@@ -88,6 +88,14 @@ public IEnumerator SetHPSmooth(float newHp)
   IsUpdating = false;
 }
         </code></pre>
+      </p>
+
+    <hr />
+      <h2 id="CreatingTheMove">Creating the move</h2>
+      <p>
+        Now everything is in place we can start making the move. The move I will be creating as an example will be Absorb which heals 50% of the damage it has done. I will be using the move data from Gen 9: Scarlet/Violet <br /><br />
+
+        
       </p>
     </div>
   </body>
