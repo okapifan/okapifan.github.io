@@ -24,7 +24,7 @@
           <li>IV’s will be mentioned in this tutorial, but are not implemented here or at the time of writing by GameDevExperiments</li>
           <li>EV’s will be implemented as they are in gen 9</li>
           <li>We will be updating the Stat calculation</li>
-          <li>I haven’t updated the saving system or added the EV items yet</li>
+          <li style="color: #FF0000;">I haven’t updated the saving system or added the EV items yet</li>
         </ul>
       </p>
       
@@ -128,20 +128,20 @@ StatEffortValues = new Dictionary<Stat, int>() { { Stat.HitPoints, 0 }, { Stat.A
         <pre .language-cs><code>
 public void GainEvs(Dictionary<Stat, int> evGained)
 {
-  // sev stands for "Stat Effort Values"
-  foreach (var sev in StatEffortValues.ToArray())
-  {
-    if (sev.Value < GlobalSettings.i.MaxEvPerStat && GetTotalEvs() < GlobalSettings.i.MaxEvs)
-    {
-      evGained[sev.Key] = Mathf.Clamp(evGained[sev.Key], 0, (GlobalSettings.i.MaxEvs - GetTotalEvs()));
-      StatEffortValues[sev.Key] = Mathf.Clamp((StatEffortValues[sev.Key] += evGained[sev.Key]), 0, GlobalSettings.i.MaxEvPerStat);
-    }
-  }
+	// sev stands for "Stat Effort Values"
+	foreach (var sev in StatEffortValues.ToArray())
+	{
+		if (sev.Value < GlobalSettings.i.MaxEvPerStat && GetTotalEvs() < GlobalSettings.i.MaxEvs)
+		{
+			evGained[sev.Key] = Mathf.Clamp(evGained[sev.Key], 0, (GlobalSettings.i.MaxEvs - GetTotalEvs()));
+			StatEffortValues[sev.Key] = Mathf.Clamp((StatEffortValues[sev.Key] += evGained[sev.Key]), 0, GlobalSettings.i.MaxEvPerStat);
+		}
+	}
 }
 
 public int GetTotalEvs()
 {
-  return StatEffortValues.Values.Sum();
+	return StatEffortValues.Values.Sum();
 }        
         </code></pre>
 
@@ -169,9 +169,9 @@ void CalculateStats()
 
 public void OnBattleOver()
 {
-  VolatileStatus = null;
-  ResetStatBoost();
-  CalculateStats();
+	VolatileStatus = null;
+	ResetStatBoost();
+	CalculateStats();
 }
         </code></pre>
       </p>
