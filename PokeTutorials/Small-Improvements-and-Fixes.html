@@ -212,6 +212,40 @@ public enum MoveTag
 }
         </code></pre>
       </p>
+    <hr />
+      <h2 id="Stat-Boost-Debuf-Dialog">Stat Boost/Debuf Dialog</h2>
+      <p>
+        <ul>
+          <li>Tested on episode: Non yet</li>
+          <li>Affected scripts: Pokemon.cs (TakeDamage)</li>
+          <li>Reason: The formula for gen 3 is incorrect</li>
+        </ul>
+        <pre class="language-cs"><code>
+public void DamageDetails TakeDamage(Move move, Pokemon attacker)
+{
+  ...
+  
+// Updated gen 3 formula, modifiers untouched
+// https://bulbapedia.bulbagarden.net/wiki/Damage#Generation_III
+float modifiers = Random.Range(0.85f, 1f) * type * critical;
+//float a = (2 * attacker.Level + 10) / 250f;
+//float d = a * move.Base.Power * ((float)attack / defense) + 2;
+//int damage = Mathf.FloorToInt(d * modifiers);
+
+float burn = 1f; // TODO
+float screen = 1f; // TODO
+float targets = 1f; // TODO
+float weather = 1f; // TODO
+float flashfire = 1f; // TODO
+
+float a = (((((2f * attacker.Level) / 5f) + 2f) * move.Base.Power * ((float)attack / defense)) / 50f);
+float b = ((a * burn * screen * targets * weather * flashfire) + 2f); // burn, screen, targets, weather, flashfire not implemented, using 1f for now
+int damage = Mathf.FloorToInt(b * modifiers);
+
+  ...
+}
+        </code></pre>
+      </p>
     </div>
   </body>
 </html>
